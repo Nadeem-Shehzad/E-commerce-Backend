@@ -10,7 +10,7 @@ const getAllProducts = (req, res) => {
 
 
 //@desc Get single product
-//@route GET /api/product/:id
+//@route GET /api/user/product/:id
 //@access Public
 const getSingleProduct = (req, res) => {
     res.status(200).json({ message: `Single Product` });
@@ -26,7 +26,7 @@ const searchProduct = (req, res) => {
 
 
 //@desc Get all cart products
-//@route GET /api/product/cart
+//@route GET /api/user/product/cart
 //@access Public
 const allCartProducts = (req, res) => {
     res.status(200).json({ message: `all cart products` });
