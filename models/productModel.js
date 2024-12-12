@@ -2,22 +2,45 @@ const mongoose = require('mongoose');
 
 
 const productSchema = new mongoose.Schema({
-    name: {
+    title: {
         type: String,
-        required: [true,'Product name Required!'],
+        required: [true, 'Product title Required!'],
         min: 3,
-        max: 18 
+        max: 18,
+        trim: true
     },
     price: {
         type: Number,
-        required: [true,'Product Price Required']
+        required: [true, 'Product Price Required'],
+        trim: true
     },
-    quantity: {
-        type: Number,
-        required: true
-    } 
-});
+    description: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    brand: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    imagePath: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    category: {
+        type: String,
+        required: true,
+        enum: ['Mobile', 'Laptop',],
+    },
+    inStock: {
+        type: Boolean,
+        defualt: true,
+        select: true,
+    },
+}, { timestamps: true });
 
-const productModel = mongoose.model('Product',productSchema);
+const productModel = mongoose.model('Product', productSchema);
 
 module.exports = productModel;
