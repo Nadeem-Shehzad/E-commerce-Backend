@@ -30,16 +30,20 @@ const searchProduct = asyncHandler(async (req, res) => {
 //@route POST /api/admin/product
 //@access Public
 const addProduct = asyncHandler(async (req, res) => {
-    const { name, price, quantity } = req.body;
-    if (!name || !price || !quantity) {
+    const { title, price, description, brand, imagePath, category, inStock } = req.body;
+    if (!title || !price || !description || !brand || !imagePath || !category) {
         res.status(400);
         throw new Error('All Fields are mendatory !');
     }
 
     const product = await Product.create({
-        name,
+        title,
         price,
-        quantity
+        description,
+        brand,
+        imagePath,
+        category,
+        inStock
     });
 
     res.status(201).json(product);
