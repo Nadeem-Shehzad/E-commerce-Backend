@@ -1,30 +1,5 @@
 
 
-
-//@desc Get all products
-//@route GET /api/user/product
-//@access Public
-const getAllProducts = (req, res) => {
-    res.status(200).json({ message: `Get all products` });
-};
-
-
-//@desc Get single product
-//@route GET /api/user/product/:id
-//@access Public
-const getSingleProduct = (req, res) => {
-    res.status(200).json({ message: `Single Product` });
-};
-
-
-//@desc search product
-//@route GET /api/user/product/search
-//@access Public
-const searchProduct = (req, res) => {
-    res.status(200).json({ message: `Search Product` });
-};
-
-
 //@desc Get all cart products
 //@route GET /api/user/product/cart
 //@access Public
@@ -78,9 +53,6 @@ const removeFromWishList = (req, res) => {
 
 
 module.exports = {
-    getAllProducts,
-    getSingleProduct,
-    searchProduct,
     allCartProducts,
     addToCart,
     removeFromCart,

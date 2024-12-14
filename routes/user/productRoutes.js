@@ -15,9 +15,6 @@ const {
 } = require('../../controllers/user/productController');
 
 
-router.route('/')
-    .get(getAllProducts);
-
 router.route('/cart')
     .get(allCartProducts);
 
@@ -31,9 +28,6 @@ router.route('/wishlist')
 router.route('/wishlist/:id')
     .post(addToWishList)
     .delete(removeFromWishList);
-
-router.route('/:id')
-    .get(getSingleProduct);
 
 
 module.exports = router;
