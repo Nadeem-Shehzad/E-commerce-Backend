@@ -2,6 +2,15 @@ const asyncHandler = require('express-async-handler');
 const { validationResult } = require('express-validator');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const cloudinary = require('cloudinary');
+
+
+//setup cloudinary to store images in cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
+});
 
 
 //@desc Register User
@@ -15,12 +24,21 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const { name, phoneNumber, email, password, isAdmin, address, city, zipCode } = req.body;
+    const file = req.files.image;
+    //console.log(`file --> ${file.name}`);
 
     const userAvailable = await User.findUser(email);
     if (userAvailable) {
         res.status(400);
         throw new Error('User Already Exists!');
     }
+
+    //upload image to cloudinary server
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+        public_id: `${Date.now()}`,
+        resource_type: "auto",
+        folder: "images"
+    });
 
     const hashPassword = await User.hashedPassword(password);
 
@@ -29,6 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
         phoneNumber,
         email,
         password: hashPassword,
+        image: result.secure_url,
         isAdmin,
         address,
         city,

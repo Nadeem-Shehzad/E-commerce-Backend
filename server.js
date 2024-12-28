@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/admin/productRoutes');
@@ -14,6 +15,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 connectDB();
+
+// to get temp files like images
+app.use(fileUpload({
+    useTempFiles: true,
+    limits: { fileSize: 50 * 2024 * 1024 }
+}));
 
 app.use(cors());
 app.use(express.json());

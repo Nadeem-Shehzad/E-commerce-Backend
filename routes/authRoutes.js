@@ -20,8 +20,10 @@ const {
 router.route('/register')
     .post(registrationValidation, registerUser);
 
+    
 router.route('/login')
     .post(loginValidation, loginUser);
+
 
 router.route('/')
     .get(getAllUsers);
