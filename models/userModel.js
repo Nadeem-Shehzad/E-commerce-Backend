@@ -7,8 +7,7 @@ const UserSchema = new Schema({
         type: String,
     },
     phoneNumber: {
-        type: Number,
-        unique: [true, 'Phone Number Already Exists'],
+        type: String
     },
     email: {
         type: String,
@@ -17,13 +16,17 @@ const UserSchema = new Schema({
     password: {
         type: String
     },
-    image:{
+    image: {
         type: String,
         default: ''
     },
     isAdmin: {
         type: Boolean,
         default: false,
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
     },
     address: {
         type: String,
@@ -37,8 +40,23 @@ const UserSchema = new Schema({
         type: String,
         default: ''
     },
+    token: {
+        type: String,
+        default: ''
+    }
 
 }, { timestamps: true });
+
+
+UserSchema.pre('save', function (next) {
+    if (this.phoneNumber && !this.phoneNumber.startsWith('+92')) {
+        this.phoneNumber = `+92${this.phoneNumber}`
+    }
+    if (this.isAdmin) {
+        this.isBlocked = undefined;
+    }
+    next();
+});
 
 
 UserSchema.statics.hashedPassword = async function (password) {
