@@ -17,6 +17,7 @@ const {
     loginUser,
     getCurrentUser,
     forgotPassword,
+    resetPassword,
     updateUserInfo,
     deleteUserAccount
 } = require('../controllers/cAuthController');
@@ -38,13 +39,17 @@ router.route('/forgot-password')
     .post(forgotPassword);
 
 
+router.route('/reset-password')
+    .post(resetPassword);
+
+
 // admin specific routes
 router.route('/admin')
     .get(tokenValidator, getAllUsers);
 
 
 router.route('/update-info/:_id')
-    .put(tokenValidator, updateUserInfo);
+    .put(tokenValidator, updateUserInfo); // we can also update password through this api
 
 router.route('/delete-account/:_id')
     .delete(tokenValidator, deleteUserAccount);

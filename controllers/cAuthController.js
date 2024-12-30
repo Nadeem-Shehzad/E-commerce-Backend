@@ -26,7 +26,7 @@ const sendResetPasswordMail = async (name, email, token) => {
             requireTLS: true,
             auth: {
                 user: 'nadeemshehzad.mayo@gmail.com',
-                pass: 'computer867science897',
+                pass: 'djjslgqfukojhvuz',
             },
         });
 
@@ -34,9 +34,7 @@ const sendResetPasswordMail = async (name, email, token) => {
             from: 'nadeemshehzad.mayo@gmail.com',
             to: email,
             subject: 'Password Reset',
-            html: `<p>Click the link below to reset your password:</p>
-                   <a href="http://localhost:8000/api/auth/reset-password?token='+token+'">
-                   <p>The link expires in 15 minutes.</p>`,
+            html: '<p> Hi ' + name + ', copy link <a href="http://localhost:8000/api/auth/reset-password?token=' + token + '"> and reset your password'
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
@@ -133,7 +131,13 @@ const loginUser = asyncHandler(async (req, res) => {
             }
         }, process.env.TOKEN_SECRET, { expiresIn: '30m' });
 
-        res.status(200).json({ accessToken });
+        const userData = await User.findByIdAndUpdate(
+            user.id,
+            { $set: { token: accessToken } },
+            { new: true }
+        )
+
+        res.status(200).json({ success: true, message: 'User Details', data: userData });
     } else {
         res.status(401);
         throw new Error('email or password is not valid!');
@@ -162,10 +166,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
     }
 
     const randomString = randomstring.generate();
-    
+
     const data = await User.updateOne({ email: email }, { $set: { token: randomString } });
     sendResetPasswordMail(userData.name, userData.email, randomString);
-    console.log('----------');
     res.status(200).json({ success: true, msg: 'Please check your mail inbox. and reset your password' });
 });
 
@@ -174,7 +177,27 @@ const forgotPassword = asyncHandler(async (req, res) => {
 //@route POST /api/auth/reset-password
 //@access Public
 const resetPassword = asyncHandler(async (req, res) => {
-    res.status(200).json(`Reset Password`);
+    const token = req.query.token;
+    const tokenData = await User.findOne({ token: token });
+
+    if (tokenData) {
+        const newPassword = req.body.password;
+        const newPasswordHashed = await User.hashedPassword(newPassword);
+        const userData = await User.findByIdAndUpdate(
+            tokenData.id,
+            {
+                $set: {
+                    password: newPasswordHashed,
+                    token: ''
+                }
+            },
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, message: 'Your Password has been reset', data: userData });
+    } else {
+        res.status(400).json({ success: true, message: 'The link has been expired!' });
+    }
 });
 
 
