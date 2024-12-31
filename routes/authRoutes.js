@@ -9,7 +9,10 @@ const tokenValidator = require('../middlewares/tokenValidator');
 const router = express.Router();
 
 const {
-    getAllUsers
+    getAllUsers,
+    blockUser,
+    unBlockUser,
+    deleteUser
 } = require('../controllers/admin/authController');
 
 const {
@@ -46,6 +49,18 @@ router.route('/reset-password')
 // admin specific routes
 router.route('/admin')
     .get(tokenValidator, getAllUsers);
+
+
+router.route('/admin/block-user/:_id')
+    .post(tokenValidator, blockUser);
+
+
+router.route('/admin/unblock-user/:_id')
+    .post(tokenValidator, unBlockUser);
+
+
+router.route('/admin/delete-user/:_id')
+    .delete(tokenValidator, deleteUser);
 
 
 router.route('/update-info/:_id')
