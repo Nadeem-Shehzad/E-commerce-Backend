@@ -18,7 +18,7 @@ const {
 router.route('/add-product')
     .post([tokenValidator, productValidation], addProduct);
 
-router.route('/product/:id')
+router.route('/product/:_id')
     .put(tokenValidator, updateProduct)
     .delete(tokenValidator, deleteProduct);
 
