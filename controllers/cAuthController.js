@@ -20,18 +20,18 @@ const sendResetPasswordMail = async (name, email, token) => {
     try {
 
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
+            host: process.env.MAIL_HOST,
+            port: process.env.HOST_PORT,
             secure: false,
             requireTLS: true,
             auth: {
-                user: 'nadeemshehzad.mayo@gmail.com',
-                pass: 'djjslgqfukojhvuz',
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASSWORD,
             },
         });
 
         const mailOptions = {
-            from: 'nadeemshehzad.mayo@gmail.com',
+            from: process.env.MAIL_USER,
             to: email,
             subject: 'Password Reset',
             html: '<p> Hi ' + name + ', copy link <a href="http://localhost:8000/api/auth/reset-password?token=' + token + '"> and reset your password'
@@ -129,7 +129,7 @@ const loginUser = asyncHandler(async (req, res) => {
                 email: user.email,
                 id: user.id
             }
-        }, process.env.TOKEN_SECRET, { expiresIn: '30m' });
+        }, process.env.TOKEN_SECRET, { expiresIn: '50m' });
 
         const userData = await User.findByIdAndUpdate(
             user.id,
@@ -244,7 +244,6 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
     res.status(200).json(deletedAccount);
 });
-
 
 
 // custom error function
