@@ -93,7 +93,7 @@ const loginUser = asyncHandler(async (req, res) => {
                 email: user.email,
                 id: user.id
             }
-        }, process.env.TOKEN_SECRET, { expiresIn: '50m' });
+        }, process.env.TOKEN_SECRET, { expiresIn: '30m' });
 
         const userData = await User.findByIdAndUpdate(
             user.id,
