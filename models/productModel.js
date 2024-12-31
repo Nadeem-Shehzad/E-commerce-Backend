@@ -2,43 +2,33 @@ const mongoose = require('mongoose');
 
 
 const productSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: [true, 'Product title Required!'],
-        min: 3,
-        max: 18,
-        trim: true
+    name: {
+        type: String
     },
     price: {
         type: Number,
-        required: [true, 'Product Price Required'],
-        trim: true
     },
     description: {
-        type: String,
-        required: true,
-        trim: true
+        type: String
     },
     brand: {
-        type: String,
-        required: true,
-        trim: true
+        type: String
     },
-    imagePath: {
+    image: {
         type: String,
-        required: true,
-        trim: true
+        default: ''
     },
     category: {
-        type: String,
-        required: true,
-        enum: ['Mobile', 'Laptop',],
+        type: String
     },
     inStock: {
         type: Boolean,
-        defualt: true,
-        select: true,
+        defualt: true
     },
+    discount: {
+        type: Number,
+        default: 0
+    }
 }, { timestamps: true });
 
 const productModel = mongoose.model('Product', productSchema);

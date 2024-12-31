@@ -15,42 +15,6 @@ cloudinary.config({
 });
 
 
-// mail send functionality
-const sendResetPasswordMail = async (name, email, token) => {
-    try {
-
-        const transporter = nodemailer.createTransport({
-            host: process.env.MAIL_HOST,
-            port: process.env.HOST_PORT,
-            secure: false,
-            requireTLS: true,
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASSWORD,
-            },
-        });
-
-        const mailOptions = {
-            from: process.env.MAIL_USER,
-            to: email,
-            subject: 'Password Reset',
-            html: '<p> Hi ' + name + ', copy link <a href="http://localhost:8000/api/auth/reset-password?token=' + token + '"> and reset your password'
-        };
-
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Mail has been sent:- ', info.response);
-            }
-        })
-
-    } catch (error) {
-        res.status(400).send({ success: false, msg: error.message });
-    }
-}
-
-
 //@desc Register User
 //@route POST /api/user/register
 //@access Public
@@ -244,6 +208,43 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
     res.status(200).json(deletedAccount);
 });
+
+
+// mail send functionality
+const sendResetPasswordMail = async (name, email, token) => {
+    try {
+
+        const transporter = nodemailer.createTransport({
+            host: process.env.MAIL_HOST,
+            port: process.env.HOST_PORT,
+            secure: false,
+            requireTLS: true,
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASSWORD,
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.MAIL_USER,
+            to: email,
+            subject: 'Password Reset',
+            html: '<p> Hi ' + name + ', copy link <a href="http://localhost:8000/api/auth/reset-password?token=' + token + '"> and reset your password'
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Mail has been sent:- ', info.response);
+            }
+        })
+
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+}
+
 
 
 // custom error function

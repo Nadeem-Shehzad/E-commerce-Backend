@@ -61,8 +61,38 @@ const loginValidation = [
 ];
 
 
+const productValidation = [
+    body('name')
+        .notEmpty().withMessage('Product name required!')
+        .trim()
+        .isLength({ min: 3 }).withMessage('Min 3 chars required!')
+        .isLength({ max: 15 }).withMessage('Max 15 chars allowed!'),
+
+    body('price')
+        .notEmpty().withMessage('Product Price required!')
+        .trim(),
+
+    body('description')
+        .notEmpty().withMessage('Product description required!')
+        .trim()
+        .isLength({ min: 3 }).withMessage('Min 3 chars required!')
+        .isLength({ max: 25 }).withMessage('Max 25 chars allowed!'),
+
+    body('brand')
+        .notEmpty().withMessage('Brand name required!')
+        .trim()
+        .isIn(['Xaomi', 'Samsung', 'Apple', 'HP', 'DELL']).withMessage('Invalid product brand! Allowed brands are: Xaomi, Samsung, Apple, HP, DELL'),
+
+    body('category')
+        .notEmpty().withMessage('Product category required!')
+        .isIn(['Mobile', 'Laptop']).withMessage('Invalid product category! Allowed categories are: Mobile, Laptop'),
+
+];
+
+
 
 module.exports = {
     registrationValidation,
-    loginValidation
+    loginValidation,
+    productValidation
 }
