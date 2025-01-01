@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
+const { Schema } = mongoose;
+const { ObjectId } = Schema.Types;
 
-const productSchema = new mongoose.Schema({
+const productSchema = new Schema({
     name: {
         type: String
     },
@@ -14,12 +16,30 @@ const productSchema = new mongoose.Schema({
     brand: {
         type: String
     },
-    image: {
-        type: String,
-        default: ''
-    },
     category: {
         type: String
+    },
+    image: {
+        public_id: { // needs public_id to delete it from cloudinary
+            type: String,
+            required: [true,'image public_id missing!']
+        },
+        url: {
+            type: String,
+            required: [true,'image url missing!']       
+        }
+    },
+    reviews: {
+        type: [{
+            rate: Number,
+            ratedBy: ObjectId,
+            comment: String
+        }],
+        default: []
+    },
+    rating: {
+        type: Number,
+        default: 0
     },
     inStock: {
         type: Boolean,

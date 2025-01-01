@@ -33,7 +33,6 @@ const addProduct = asyncHandler(async (req, res) => {
 
     const { name, price, description, brand, category, inStock, discount } = req.body;
 
-    let imageUploadResult = '';
     if (req.files && req.files.image) {
         const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
             public_id: `${Date.now()}`,
@@ -42,22 +41,28 @@ const addProduct = asyncHandler(async (req, res) => {
         });
 
         if (result && result.secure_url) {
-            imageUploadResult = result.secure_url;
+
+            const product = await Product.create({
+                name,
+                price,
+                description,
+                brand,
+                image: {
+                    public_id: result.public_id,
+                    url: result.secure_url
+                },
+                category,
+                inStock,
+                discount
+            });
+        
+            res.status(201).json({ success: true, message: 'Product Added.', data: product });
         }
+    } else {
+        res.status(400);
+        throw new Error('Error. Image not save or other data missing!');
     }
 
-    const product = await Product.create({
-        name,
-        price,
-        description,
-        brand,
-        image: imageUploadResult,
-        category,
-        inStock,
-        discount
-    });
-
-    res.status(201).json({ success: true, message: 'Product Added.', data: product });
 });
 
 

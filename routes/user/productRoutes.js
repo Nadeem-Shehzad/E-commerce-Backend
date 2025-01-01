@@ -2,25 +2,26 @@ const express = require('express');
 
 const router = express.Router();
 
+const tokenValidator = require('../../middlewares/tokenValidator');
+
 const {
-    getAllProducts,
-    getSingleProduct,
-    searchProduct,
     allCartProducts,
     addToCart,
     removeFromCart,
     allWishlistProducts,
     addToWishList,
     removeFromWishList
-} = require('../../controllers/user/productController');
+} = require('../../controllers/user/cartController');
 
 
 router.route('/cart')
-    .get(allCartProducts);
+    .get(tokenValidator, allCartProducts);
 
-router.route('/cart/:id')
-    .post(addToCart)
-    .delete(removeFromCart);
+router.route('/cart')
+    .post(tokenValidator, addToCart)
+
+router.route('/cart/:_id')
+    .delete(tokenValidator, removeFromCart);
 
 router.route('/wishlist')
     .get(allWishlistProducts);

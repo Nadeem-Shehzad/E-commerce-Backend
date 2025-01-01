@@ -66,7 +66,7 @@ const productValidation = [
         .notEmpty().withMessage('Product name required!')
         .trim()
         .isLength({ min: 3 }).withMessage('Min 3 chars required!')
-        .isLength({ max: 15 }).withMessage('Max 15 chars allowed!'),
+        .isLength({ max: 22 }).withMessage('Max 22 chars allowed!'),
 
     body('price')
         .notEmpty().withMessage('Product Price required!')
@@ -76,7 +76,7 @@ const productValidation = [
         .notEmpty().withMessage('Product description required!')
         .trim()
         .isLength({ min: 3 }).withMessage('Min 3 chars required!')
-        .isLength({ max: 25 }).withMessage('Max 25 chars allowed!'),
+        .isLength({ max: 50 }).withMessage('Max 50 chars allowed!'),
 
     body('brand')
         .notEmpty().withMessage('Brand name required!')
