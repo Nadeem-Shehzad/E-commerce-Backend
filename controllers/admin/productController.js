@@ -42,9 +42,13 @@ const addProduct = asyncHandler(async (req, res) => {
 
         if (result && result.secure_url) {
 
+            // calculate discount from total price
+            const totalDiscount = price / 100 * discount;
+            const discountedPrice = price - totalDiscount;
+
             const product = await Product.create({
                 name,
-                price,
+                price: discountedPrice,
                 description,
                 brand,
                 image: {
@@ -55,7 +59,7 @@ const addProduct = asyncHandler(async (req, res) => {
                 inStock,
                 discount
             });
-        
+
             res.status(201).json({ success: true, message: 'Product Added.', data: product });
         }
     } else {
@@ -73,15 +77,53 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     await checkAdminAccess(req, res);
 
-    await checkProductExists(req, res);
+    const product = await checkProductExists(req, res);
 
-    const updatedProductData = await Product.findByIdAndUpdate(
+    const newData = req.body;
+
+    if (req.files && req.files.image) {
+        const file = req.files.image;
+        const imageUploadResult = await cloudinary.uploader.upload(file.tempFilePath, {
+            public_id: `${Date.now()}`,
+            resource_type: "auto",
+            folder: "images"
+        });
+
+        const imageObject = {
+            image: {
+                public_id: imageUploadResult.public_id,
+                url: imageUploadResult.secure_url
+            }
+        }
+
+        Object.assign(newData, imageObject);
+
+        // delete old image
+        const imageId = product.image.public_id;
+        await cloudinary.uploader.destroy(imageId, {
+            resource_type: 'auto',
+            invalidate: true
+        })
+    }
+
+    let discountObj = {};
+    if ('discount' in newData) {
+        const { discount } = req.body;
+        const totalDiscount = product.price / 100 * discount;
+        const discountedPrice = product.price - totalDiscount;
+
+        Object.assign(discountObj, { price: discountedPrice });
+    }
+
+    Object.assign(newData, discountObj);
+
+    const updatedData = await Product.findByIdAndUpdate(
         req.params._id,
-        req.body,
+        newData,
         { new: true }
     );
 
-    res.status(201).json({ success: true, message: `Product Updated`, data: updatedProductData });
+    res.status(201).json({ success: true, message: `Product Updated`, data: updatedData });
 });
 
 
@@ -91,10 +133,23 @@ const updateProduct = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
 
     await checkAdminAccess(req, res);
+    
+    const productID = req.params._id;
+    const product = await Product.findById(productID);
+    if (!product) {
+        res.status(404);
+        throw new Error('Product not Found!');
+    }
 
-    await checkProductExists(req, res);
+    const imageId = product.image.public_id;
 
-    const deletedProductData = await Product.findByIdAndDelete(req.params._id);
+    // delete image from cloudinary
+    await cloudinary.uploader.destroy(
+        imageId,
+        { resource_type: "auto", invalidate: true }
+    );
+
+    const deletedProductData = await Product.findByIdAndDelete(productID);
 
     res.status(201).json({ success: true, message: `Product Deleted`, data: deletedProductData });
 });
