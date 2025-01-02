@@ -7,28 +7,32 @@ const tokenValidator = require('../../middlewares/tokenValidator');
 const {
     allCartProducts,
     addToCart,
-    removeFromCart,
+    removeFromCart
+} = require('../../controllers/user/cartController');
+
+const {
     allWishlistProducts,
     addToWishList,
     removeFromWishList
-} = require('../../controllers/user/cartController');
+} = require('../../controllers/user/wishListController')
 
 
+// cart routes
 router.route('/cart')
-    .get(tokenValidator, allCartProducts);
-
-router.route('/cart')
-    .post(tokenValidator, addToCart)
+    .get(tokenValidator, allCartProducts)
+    .post(tokenValidator, addToCart);
 
 router.route('/cart/:_id')
     .delete(tokenValidator, removeFromCart);
 
-router.route('/wishlist')
-    .get(allWishlistProducts);
 
-router.route('/wishlist/:id')
-    .post(addToWishList)
-    .delete(removeFromWishList);
+// wishlist routes
+router.route('/wishlist')
+    .get(tokenValidator, allWishlistProducts);
+
+router.route('/wishlist/:_id')
+    .post(tokenValidator, addToWishList)
+    .delete(tokenValidator, removeFromWishList);
 
 
 module.exports = router;
