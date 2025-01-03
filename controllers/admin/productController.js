@@ -3,6 +3,10 @@ const { validationResult } = require('express-validator');
 const cloudinary = require('cloudinary');
 const Product = require('../../models/productModel');
 const User = require('../../models/userModel');
+const Cart = require('../../models/cart');
+const Wishlist = require('../../models/wishlist');
+
+
 const {
     checkAdminAccess,
     checkProductExists,
@@ -133,7 +137,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
 
     await checkAdminAccess(req, res);
-    
+
     const productID = req.params._id;
     const product = await Product.findById(productID);
     if (!product) {
@@ -155,9 +159,44 @@ const deleteProduct = asyncHandler(async (req, res) => {
 });
 
 
+//@desc Delete product
+//@route DELETE /api/admin/product/:id
+//@access Private
+const cartProducts = asyncHandler(async (req, res) => {
+
+    await checkAdminAccess(req, res);
+
+    const page = parseInt(req.body.page) || 1;
+    const dataLimit = parseInt(req.body.limit) || 2;
+
+    const cartProducts = await Cart.find({}).skip((page - 1) * dataLimit).limit(dataLimit);
+
+    res.status(201).json({ success: true, message: `All Cart Products`, data: cartProducts });
+});
+
+
+//@desc Delete product
+//@route DELETE /api/admin/product/:id
+//@access Private
+const wishlistProducts = asyncHandler(async (req, res) => {
+
+    await checkAdminAccess(req, res);
+
+    const page = parseInt(req.body.page) || 1;
+    const dataLimit = parseInt(req.body.limit) || 2;
+
+    const wishlistProducts = await Wishlist.find({}).skip((page - 1) * dataLimit).limit(dataLimit);
+
+    res.status(201).json({ success: true, message: `All Wishlist Products`, data: wishlistProducts });
+});
+
+
+
 
 module.exports = {
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    cartProducts,
+    wishlistProducts
 }
