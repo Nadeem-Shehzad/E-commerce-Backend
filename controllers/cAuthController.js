@@ -109,6 +109,33 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 
+//@desc Logout User
+//@route POST /api/user/logout
+//@access Public
+const logoutUser = asyncHandler(async (req, res) => {
+    if (req.headers && req.headers.authorization) {
+        const token = req.headers.authorization.split(' ')[1];
+
+        if (!token) {
+            res.status(400);
+            throw new Error('Token is missing!');
+        }
+
+        const logoutUser = await User.findByIdAndUpdate(
+            req.user.id,
+            { $set: { token: {} } },
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, message: 'Sign out.', data: logoutUser });
+
+    } else {
+        res.status(500);
+        throw new Error('Server Error!');
+    }
+});
+
+
 //@desc Get current user
 //@route GET /api/users/currentUser
 //@access Private
@@ -260,6 +287,7 @@ const errorMsg = (errors) => {
 module.exports = {
     registerUser,
     loginUser,
+    logoutUser,
     getCurrentUser,
     forgotPassword,
     resetPassword,
