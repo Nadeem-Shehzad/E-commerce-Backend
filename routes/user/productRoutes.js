@@ -17,8 +17,10 @@ const {
 } = require('../../controllers/user/wishListController')
 
 const {
+    getAllReviews,
     addReview,
-    updateReview
+    updateReview,
+    deleteReview
 } = require('../../controllers/user/reviewController');
 
 
@@ -46,8 +48,14 @@ router.route('/wishlist/:_id')
 router.route('/add-review')
     .post(tokenValidator, addReview);
 
+router.route('/all-reviews/:_id')
+    .get(tokenValidator, getAllReviews);
+
 router.route('/update-review/:_id')
     .put(tokenValidator, updateReview);
+
+router.route('/delete-review/:_id')
+    .delete(tokenValidator, deleteReview);
 
 
 
