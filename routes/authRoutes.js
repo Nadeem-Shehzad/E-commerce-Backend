@@ -18,6 +18,7 @@ const {
 const {
     registerUser,
     loginUser,
+    logoutUser,
     getCurrentUser,
     forgotPassword,
     resetPassword,
@@ -32,6 +33,10 @@ router.route('/register')
 
 router.route('/login')
     .post(loginValidation, loginUser);
+
+
+router.route('/logout')
+    .post(tokenValidator, logoutUser);
 
 
 router.route('/current-user')
