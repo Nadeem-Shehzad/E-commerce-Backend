@@ -31,7 +31,7 @@ const productSchema = new Schema({
     },
     reviews: {
         type: [{
-            rate: Number,
+            rating: Number,
             ratedBy: ObjectId,
             comment: String
         }],
